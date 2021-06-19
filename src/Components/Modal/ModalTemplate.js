@@ -1,5 +1,8 @@
-import { withStyles } from "react-jss";
-import rickAndMorty from "../../assets/img/rick-and-morty1.jpeg";
+import { Fragment, useEffect, useState } from "react";
+import { useTheme, withStyles } from "react-jss";
+import { useLocalContext } from "../../localContext";
+import { _fetch } from "../../_fetch";
+import Loader from "../Loader";
 
 const styles = (theme) => ({
   modal: {
@@ -12,32 +15,38 @@ const styles = (theme) => ({
   content: {
     textAlign: "center",
     backgroundColor: theme.colorWhite,
-    padding: "2rem",
-  },
-  contentImage: {
-    width: "25rem",
+    padding: theme.paddingLarge,
   },
   contentDescription: {
     minWidth: "25rem",
     display: "flex",
     flexWrap: "wrap",
-    justifyContent: "center",
-    padding: "2rem 0",
+    justifyContent: "space-around",
+    padding: `${theme.paddingLarge} 0`,
   },
 
   description: {
+    width: "40%",
     textAlign: "start",
-    marginRight: "1rem",
   },
-  heading: {
+  headingPrimary: {
     fontSize: "3rem",
+    color: theme.colorPrimary,
+  },
+  headingSecondary: {
+    fontSize: "2.3rem",
   },
   label: {
-    fontSize: "1.5rem",
+    fontSize: "1.1rem",
+    letterSpacing: "1.5px",
+
+    "& span": {
+      fontSize: "1.6rem",
+    },
   },
   close: {
     textTransform: "uppercase",
-    color: theme.colorDarkGreen,
+    color: theme.colorPrimary,
     backgroundColor: "transparent",
     width: "100%",
     margin: "0 auto",
@@ -49,86 +58,92 @@ const styles = (theme) => ({
 });
 
 const ModalTemplate = ({ classes }) => {
+  const [data, setData] = useState(null);
+  const theme = useTheme();
+  const {
+    closeModal,
+    modalData: {
+      image,
+      name,
+      status,
+      species,
+      type,
+      gender,
+      location,
+      origin,
+      episode,
+    },
+    handleError,
+  } = useLocalContext();
+
+  useEffect(() => {
+    Promise.all(episode.map((url) => _fetch(url)))
+      .then((response) => {
+        setData(response);
+      })
+      .catch(() => handleError());
+  }, [episode, handleError]);
+
+  if (!data) {
+    return <Loader fullScreen color={theme.colorPrimary} size={150} />;
+  }
+
   return (
     <div className={classes.modal}>
       <div className={classes.content}>
-        <img src={rickAndMorty} alt="avatar" className={classes.contentImage} />
+        <img
+          src={image}
+          alt="character avatar"
+          className={classes.contentImage}
+        />
+        <h3 className={classes.headingPrimary}>{name}</h3>
         <div className={classes.contentDescription}>
           <div className={classes.description}>
-            <h3 className={classes.heading}>General</h3>
+            <h3 className={classes.headingSecondary}>General</h3>
             <p className={classes.label}>
-              Name: <span>Rick Sanchez</span>
+              Name: <span>{name || "-"}</span>
             </p>
+            <hr />
             <p className={classes.label}>
-              Status: <span>Alive</span>
+              Status: <span>{status || "-"}</span>
             </p>
+            <hr />
             <p className={classes.label}>
-              Species: <span>Human</span>
+              Species: <span>{species || "-"}</span>
             </p>
+            <hr />
             <p className={classes.label}>
-              Type: <span>Rick</span>
+              Type: <span>{type || "-"}</span>
             </p>
+            <hr />
             <p className={classes.label}>
-              Gender: <span>Male</span>
+              Gender: <span>{gender || "-"}</span>
             </p>
-          </div>
-          <div className={classes.description}>
-            <h3 className={classes.heading}>General</h3>
+            <hr />
             <p className={classes.label}>
-              Name: <span>Rick Sanchez</span>
+              Origin: <span>{origin.name || "-"}</span>
             </p>
+            <hr />
             <p className={classes.label}>
-              Status: <span>Alive</span>
-            </p>
-            <p className={classes.label}>
-              Species: <span>Human</span>
-            </p>
-            <p className={classes.label}>
-              Type: <span>Rick</span>
-            </p>
-            <p className={classes.label}>
-              Gender: <span>Male</span>
+              Location: <span>{location.name || "-"}</span>
             </p>
           </div>
           <div className={classes.description}>
-            <h3 className={classes.heading}>General</h3>
-            <p className={classes.label}>
-              Name: <span>Rick Sanchez</span>
-            </p>
-            <p className={classes.label}>
-              Status: <span>Alive</span>
-            </p>
-            <p className={classes.label}>
-              Species: <span>Human</span>
-            </p>
-            <p className={classes.label}>
-              Type: <span>Rick</span>
-            </p>
-            <p className={classes.label}>
-              Gender: <span>Male</span>
-            </p>
-          </div>
-          <div className={classes.description}>
-            <h3 className={classes.heading}>General</h3>
-            <p className={classes.label}>
-              Name: <span>Rick Sanchez</span>
-            </p>
-            <p className={classes.label}>
-              Status: <span>Alive</span>
-            </p>
-            <p className={classes.label}>
-              Species: <span>Human</span>
-            </p>
-            <p className={classes.label}>
-              Type: <span>Rick</span>
-            </p>
-            <p className={classes.label}>
-              Gender: <span>Male</span>
-            </p>
+            <h3 className={classes.headingSecondary}>Episodes</h3>
+            {data.map(({ name, episode, id }, index) => (
+              <Fragment key={id}>
+                <p>
+                  {name} ({episode})
+                </p>
+                {!(index + 1 === data.length) && <hr />}
+              </Fragment>
+            ))}
           </div>
         </div>
         <hr />
-        <button className={classes.close}>Close</button>
+        <button className={classes.close} onClick={closeModal}>
+          Close
+        </button>
       </div>
     </div>
   );

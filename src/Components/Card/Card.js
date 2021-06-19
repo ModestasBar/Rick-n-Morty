@@ -1,12 +1,11 @@
 import { withStyles } from "react-jss";
-import testImg from "../../assets/img/rick-and-morty.jpeg";
 
 const styles = (theme) => ({
   card: {
     width: "100%",
-    backgroundColor: theme.colorDarkGreen,
+    backgroundColor: theme.colorTertiary,
     textAlign: "center",
-    padding: "2rem",
+    padding: theme.paddingLarge,
     position: "relative",
     transition: "ease all .2s",
     boxShadow: `0 .5rem 3.5rem ${theme.colorBlack}`,
@@ -26,19 +25,19 @@ const styles = (theme) => ({
     marginTop: "2rem",
     fontSize: "2rem",
     textTransform: "uppercase",
-    background: `linear-gradient(to right, ${theme.colorMediumGreen}, ${theme.colorLightGreen})`,
-    WebkitBackgroundClip: "text",
-    color: "transparent",
+    color: theme.colorPrimary,
   },
 });
 
-const Card = ({ classes }) => {
-  return (
-    <div className={classes.card}>
-      <img className={classes.cardImage} src={testImg} alt="character avatar" />
-      <div className={classes.cardTitle}>character name</div>
-    </div>
-  );
-};
+const Card = ({ classes, openModal, data, reference }) => (
+  <div className={classes.card} onClick={() => openModal(data)} ref={reference}>
+    <img
+      className={classes.cardImage}
+      src={data.image}
+      alt="character avatar"
+    />
+    <div className={classes.cardTitle}>{data.name}</div>
+  </div>
+);
 
 export default withStyles(styles)(Card);

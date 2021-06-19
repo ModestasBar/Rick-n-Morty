@@ -20,6 +20,7 @@ body {
   font-size: 1.6rem;
   font-weight: 400;
   line-height: 1.7;
+  letter-spacing: 0.2rem;
   color: black;
   box-sizing: border-box;
 }

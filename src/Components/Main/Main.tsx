@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { withStyles } from "react-jss";
+import React, { useEffect, useState } from "react";
+import withStyles from "react-jss";
 import { ContextProvider } from "../../localContext";
 import Card from "../Card";
 import Modal from "../Modal";
@@ -58,7 +58,7 @@ const Main = ({ classes }) => {
     setSearchName(value);
     setCharacters(searchByName(data.results, value));
   };
-  const handleError = () => setError(true);
+  const handleError = (e) => setError(true);
   const closeModal = () => setModalData(null);
   const openModal = (cardData) => setModalData(cardData);
 

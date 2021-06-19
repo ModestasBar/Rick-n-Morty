@@ -1,3 +1,4 @@
+import React from "react";
 import withStyles, { useTheme } from "react-jss";
 import ClipLoader from "react-spinners/ClipLoader";
 
@@ -11,16 +12,18 @@ const styles = (theme) => ({
   }),
 });
 
-const Loader = ({ classes, loading, color, size }) => {
+const Loader = ({
+  classes,
+  loading,
+  color = null,
+  size = null,
+  fullScreen = null,
+}) => {
   const theme = useTheme();
 
   return (
     <div className={classes.loaderBox}>
-      <ClipLoader
-        color={color || theme.colorPrimary}
-        loading={loading}
-        size={size || 75}
-      />
+      <ClipLoader color={color} loading={loading} size={size || 75} />
     </div>
   );
 };

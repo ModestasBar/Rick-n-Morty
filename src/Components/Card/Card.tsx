@@ -1,4 +1,5 @@
-import { withStyles } from "react-jss";
+import React from "react";
+import withStyles from "react-jss";
 
 const styles = (theme) => ({
   card: {
@@ -29,7 +30,7 @@ const styles = (theme) => ({
   },
 });
 
-const Card = ({ classes, openModal, data, reference }) => (
+const Card = ({ classes, openModal, data, reference = null }) => (
   <div className={classes.card} onClick={() => openModal(data)} ref={reference}>
     <img
       className={classes.cardImage}

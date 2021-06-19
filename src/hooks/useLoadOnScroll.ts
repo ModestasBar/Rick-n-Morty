@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useRef } from 'react';
 
 const useLoadOnScroll = (skipLoad, callBack) => {
   const observer = useRef();
@@ -16,7 +16,7 @@ const useLoadOnScroll = (skipLoad, callBack) => {
 
       if (node) observer.current.observe(node);
     },
-    [skipLoad, callBack]
+    [skipLoad, callBack],
   );
 
   return [lastItemRef];

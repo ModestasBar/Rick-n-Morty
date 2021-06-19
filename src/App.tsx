@@ -1,4 +1,5 @@
-import { withStyles } from "react-jss";
+import React from "react";
+import withStyles from "react-jss";
 import Main from "./Components/Main/Main";
 
 const styles = (theme) => ({

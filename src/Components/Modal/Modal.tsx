@@ -1,5 +1,6 @@
+import React from "react";
 import ModalTemplate from "./ModalTemplate";
-import { withStyles } from "react-jss";
+import withStyles from "react-jss";
 
 const styles = {
   overlay: {
@@ -7,10 +8,10 @@ const styles = {
   },
 };
 
-const Modal = ({ classes, children }) => {
+const Modal = ({ classes }) => {
   return (
     <div className={classes.overlay}>
-      <ModalTemplate>{children}</ModalTemplate>
+      <ModalTemplate />
     </div>
   );
 };

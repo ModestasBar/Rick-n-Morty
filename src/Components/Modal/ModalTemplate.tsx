@@ -1,5 +1,5 @@
-import { Fragment, useEffect, useState } from "react";
-import { useTheme, withStyles } from "react-jss";
+import React, { Fragment, useEffect, useState } from "react";
+import withStyles, { useTheme } from "react-jss";
 import { useLocalContext } from "../../localContext";
 import { _fetch } from "../../_fetch";
 import Loader from "../Loader";
@@ -85,7 +85,9 @@ const ModalTemplate = ({ classes }) => {
   }, [episode, handleError]);
 
   if (!data) {
-    return <Loader fullScreen color={theme.colorPrimary} size={150} />;
+    return (
+      <Loader loading={true} fullScreen color={theme.colorPrimary} size={150} />
+    );
   }
 
   return (
@@ -135,7 +137,7 @@ const ModalTemplate = ({ classes }) => {
                 <p>
                   {name} ({episode})
                 </p>
-                {!(index + 1 === data.length) && <hr />}
+                {index + 1 !== data.length && <hr />}
               </Fragment>
             ))}
           </div>

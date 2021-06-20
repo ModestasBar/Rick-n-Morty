@@ -1,7 +1,9 @@
 import React from "react";
 import withStyles from "react-jss";
+import { ITheme } from "../../theme";
+import { ICardProps } from "./types";
 
-const styles = (theme) => ({
+const styles = (theme: ITheme) => ({
   card: {
     width: "100%",
     backgroundColor: theme.colorTertiary,
@@ -30,8 +32,8 @@ const styles = (theme) => ({
   },
 });
 
-const Card = ({ classes, openModal, data, reference = null }) => (
-  <div className={classes.card} onClick={() => openModal(data)} ref={reference}>
+const Card: React.FC<ICardProps> = ({ classes, openModal, data, element }) => (
+  <div className={classes.card} onClick={() => openModal(data)} ref={element}>
     <img
       className={classes.cardImage}
       src={data.image}

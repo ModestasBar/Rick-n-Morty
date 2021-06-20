@@ -1,3 +1,7 @@
+export interface ITheme {
+  [key: string]: string;
+}
+
 const theme = {
   colorPrimary: "rgb(98, 166, 18)",
   colorSecondary: "rgb(97, 255, 126)",

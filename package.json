@@ -24,7 +24,7 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "lint": "eslint --ext .ts --ext .jsx .",
+    "lint": "eslint --ext .ts --ext .tsx .",
     "test": "react-scripts start",
     "typecheck": "react-scripts typecheck",
     "start": "react-scripts start"

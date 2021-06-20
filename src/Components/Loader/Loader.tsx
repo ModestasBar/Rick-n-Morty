@@ -1,9 +1,11 @@
 import React from "react";
 import withStyles, { useTheme } from "react-jss";
 import ClipLoader from "react-spinners/ClipLoader";
+import { ITheme } from "../../theme";
+import { ILoaderProps } from "./types";
 
-const styles = (theme) => ({
-  loaderBox: (props) => ({
+const styles = (theme: ITheme) => ({
+  loaderBox: (props: ILoaderProps) => ({
     height: props.fullScreen ? "100vh" : "auto",
     display: "flex",
     justifyContent: "center",
@@ -12,18 +14,16 @@ const styles = (theme) => ({
   }),
 });
 
-const Loader = ({
-  classes,
-  loading,
-  color = null,
-  size = null,
-  fullScreen = null,
-}) => {
-  const theme = useTheme();
+const Loader: React.FC<ILoaderProps> = ({ classes, loading, color, size }) => {
+  const theme: ITheme = useTheme();
 
   return (
     <div className={classes.loaderBox}>
-      <ClipLoader color={color} loading={loading} size={size || 75} />
+      <ClipLoader
+        color={color || theme.colorPrimary}
+        loading={loading}
+        size={size || 75}
+      />
     </div>
   );
 };

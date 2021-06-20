@@ -1,13 +1,18 @@
 import { useEffect, useRef } from "react";
+import { ICardState } from "../Components/Main/types";
 
-const useScrollPreset = (dependencies) => {
-  const scrollPosition = useRef();
+const useScrollPreset = (dependencies: ICardState | null): [() => void] => {
+  const scrollPosition = useRef<number | null>(null);
 
   useEffect(() => {
-    window.scrollTo(0, scrollPosition.current);
+    if (scrollPosition.current) {
+      window.scrollTo(0, scrollPosition.current);
+    }
   }, [dependencies]);
 
-  const saveScrollPosition = () => (scrollPosition.current = window.scrollY);
+  const saveScrollPosition = () => {
+    scrollPosition.current = window.scrollY;
+  };
 
   return [saveScrollPosition];
 };

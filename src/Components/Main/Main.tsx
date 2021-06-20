@@ -8,8 +8,10 @@ import useScrollPreset from "../../hooks/useScrollPreset";
 import useLoadOnScroll from "../../hooks/useLoadOnScroll";
 import { _fetch } from "../../_fetch";
 import Loader from "../Loader";
+import { ICardState, IDataState } from "./types";
+import { ITheme } from "../../theme";
 
-const styles = (theme) => ({
+const styles = (theme: ITheme) => ({
   filterContainer: {
     padding: "2rem 2rem 0 2rem",
     textAlign: "center",
@@ -46,38 +48,34 @@ const styles = (theme) => ({
 
 const BASE_URL = "https://rickandmortyapi.com/api/character";
 
-const Main = ({ classes }) => {
-  const [data, setData] = useState(null);
-  const [characters, setCharacters] = useState(null);
-  const [modalData, setModalData] = useState(null);
+const Main = ({ classes }: { classes: { [key: string]: string } }) => {
+  const [data, setData] = useState<IDataState | null>(null);
+  const [cards, setCards] = useState<ICardState[] | null>(null);
+  const [modalData, setModalData] = useState<ICardState | null>(null);
   const [searchName, setSearchName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  const onSearch = (value) => {
+  const onSearch = (value: string) => {
+    const results = data?.results;
+
     setSearchName(value);
-    setCharacters(searchByName(data.results, value));
+    if (results) {
+      setCards(searchByName(results, value));
+    }
   };
-  const handleError = (e) => setError(true);
+  const handleError = () => setError(true);
   const closeModal = () => setModalData(null);
-  const openModal = (cardData) => setModalData(cardData);
+  const openModal = (cardData: ICardState) => setModalData(cardData);
 
   const [saveScrollPosition] = useScrollPreset(modalData);
   const [lastItemRef] = useLoadOnScroll(
-    searchName || loading || !data?.info?.next,
-    () => {
-      setLoading(true);
-      _fetch(data.info.next)
-        .then(({ info, results }) => {
-          setData((prevState) => ({
-            info,
-            results: [...prevState.results, ...results],
-          }));
-          setCharacters((prevState) => [...prevState, ...results]);
-        })
-        .catch((e) => handleError(e))
-        .finally(() => setLoading(false));
-    }
+    Boolean(searchName || loading || !data?.info?.next),
+    data,
+    setLoading,
+    setData,
+    setCards,
+    handleError
   );
 
   useEffect(() => {
@@ -85,7 +83,7 @@ const Main = ({ classes }) => {
     _fetch(BASE_URL)
       .then((response) => {
         setData(response);
-        setCharacters(response.results);
+        setCards(response.results);
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
@@ -99,45 +97,43 @@ const Main = ({ classes }) => {
     );
   }
 
-  if (!characters) {
+  if (!cards) {
     return <Loader loading={true} fullScreen />;
   }
 
-  return (
-    <ContextProvider value={{ closeModal, modalData, handleError }}>
-      {!modalData ? (
-        <>
-          <div className={classes.filterContainer}>
-            <input
-              value={searchName}
-              className={classes.filter}
-              placeholder="Looking for..."
-              onChange={({ target: { value } }) => onSearch(value)}
-            />
-          </div>
-          <div className={classes.cardContainer}>
-            {characters.map((character, index) => {
-              const props = {
-                openModal: (character) => {
-                  openModal(character);
-                  saveScrollPosition();
-                },
-                data: character,
-                key: character.id,
-              };
-              return characters.length === index + 1 ? (
-                <Card {...props} reference={lastItemRef} />
-              ) : (
-                <Card {...props} />
-              );
-            })}
-          </div>
+  return !modalData ? (
+    <>
+      <div className={classes.filterContainer}>
+        <input
+          value={searchName}
+          className={classes.filter}
+          placeholder="Looking for..."
+          onChange={({ target: { value } }) => onSearch(value)}
+        />
+      </div>
+      <div className={classes.cardContainer}>
+        {cards.map((character, index) => {
+          const props = {
+            openModal: (character: ICardState) => {
+              openModal(character);
+              saveScrollPosition();
+            },
+            data: character,
+            key: character.id,
+          };
+          return cards.length === index + 1 ? (
+            <Card {...props} element={lastItemRef} />
+          ) : (
+            <Card {...props} />
+          );
+        })}
+      </div>
 
-          <Loader loading={loading} />
-        </>
-      ) : (
-        <Modal />
-      )}
+      <Loader loading={loading} />
+    </>
+  ) : (
+    <ContextProvider value={{ closeModal, modalData, handleError }}>
+      <Modal />
     </ContextProvider>
   );
 };

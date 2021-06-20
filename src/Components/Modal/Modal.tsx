@@ -8,7 +8,7 @@ const styles = {
   },
 };
 
-const Modal = ({ classes }) => {
+const Modal = ({ classes }: { classes: { [key: string]: string } }) => {
   return (
     <div className={classes.overlay}>
       <ModalTemplate />

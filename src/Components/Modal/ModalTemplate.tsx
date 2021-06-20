@@ -1,10 +1,12 @@
 import React, { Fragment, useEffect, useState } from "react";
-import withStyles, { useTheme } from "react-jss";
+import withStyles from "react-jss";
 import { useLocalContext } from "../../localContext";
+import { ITheme } from "../../theme";
 import { _fetch } from "../../_fetch";
 import Loader from "../Loader";
+import { IModalDataState } from "./types";
 
-const styles = (theme) => ({
+const styles = (theme: ITheme) => ({
   modal: {
     width: "100%",
     minHeight: "100vh",
@@ -57,9 +59,8 @@ const styles = (theme) => ({
   },
 });
 
-const ModalTemplate = ({ classes }) => {
-  const [data, setData] = useState(null);
-  const theme = useTheme();
+const ModalTemplate = ({ classes }: { classes: { [key: string]: string } }) => {
+  const [data, setData] = useState<IModalDataState[] | null>(null);
   const {
     closeModal,
     modalData: {
@@ -77,7 +78,7 @@ const ModalTemplate = ({ classes }) => {
   } = useLocalContext();
 
   useEffect(() => {
-    Promise.all(episode.map((url) => _fetch(url)))
+    Promise.all<IModalDataState>(episode.map((url: string) => _fetch(url)))
       .then((response) => {
         setData(response);
       })
@@ -85,9 +86,7 @@ const ModalTemplate = ({ classes }) => {
   }, [episode, handleError]);
 
   if (!data) {
-    return (
-      <Loader loading={true} fullScreen color={theme.colorPrimary} size={150} />
-    );
+    return <Loader loading={true} fullScreen size={150} />;
   }
 
   return (
@@ -132,14 +131,16 @@ const ModalTemplate = ({ classes }) => {
           </div>
           <div className={classes.description}>
             <h3 className={classes.headingSecondary}>Episodes</h3>
-            {data.map(({ name, episode, id }, index) => (
-              <Fragment key={id}>
-                <p>
-                  {name} ({episode})
-                </p>
-                {index + 1 !== data.length && <hr />}
-              </Fragment>
-            ))}
+            {data
+              ? data.map(({ name, episode, id }, index) => (
+                  <Fragment key={id}>
+                    <p>
+                      {name} ({episode})
+                    </p>
+                    {index + 1 !== data.length && <hr />}
+                  </Fragment>
+                ))
+              : null}
           </div>
         </div>
         <hr />

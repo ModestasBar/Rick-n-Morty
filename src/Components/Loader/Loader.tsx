@@ -18,7 +18,7 @@ const Loader: React.FC<ILoaderProps> = ({ classes, loading, color, size }) => {
   const theme: ITheme = useTheme();
 
   return (
-    <div className={classes.loaderBox}>
+    <div className={classes.loaderBox} data-testid="loader">
       <ClipLoader
         color={color || theme.colorPrimary}
         loading={loading}

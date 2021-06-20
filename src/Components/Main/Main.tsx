@@ -111,7 +111,7 @@ const Main = ({ classes }: { classes: { [key: string]: string } }) => {
           onChange={({ target: { value } }) => onSearch(value)}
         />
       </div>
-      <div className={classes.cardContainer}>
+      <div className={classes.cardContainer} data-testid={"cards-grid"}>
         {cards.map((character, index) => {
           const props = {
             openModal: (character: ICardState) => {

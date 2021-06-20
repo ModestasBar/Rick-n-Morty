@@ -7,7 +7,7 @@ import theme from "./theme";
 
 ReactDOM.render(
   <React.StrictMode>
-    <JssProvider id={{ minify: false }}>
+    <JssProvider id={{ minify: true }}>
       <ThemeProvider theme={theme}>
         <App />
       </ThemeProvider>
